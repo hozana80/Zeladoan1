@@ -1,102 +1,153 @@
-# 🌊 Projeto: ZelaDoa – Sistema Inteligente de Doações em Enchentes
-Este projeto foi desenvolvido a partir do desafio sobre enchentes no Brasil.
-Ao analisar o cenário, identifiquei a dificuldade na organização e distribuição de doações, onde muitos locais recebem itens em excesso enquanto outros sofrem com escassez.
-Diante disso, surgiu a ideia de criar uma solução que centraliza informações sobre doações, conectando quem quer ajudar com quem realmente precisa.
+# 🚀 API ZelaDoa 
 
+## 📌 Sobre o Projeto
 
-## 📌 Problema: Organização de Doações
-Durante enchentes:
-    - Doações chegam sem controle 
-    - Falta comunicação entre pontos de coleta 
-    - Há: 
-         excesso de roupas em alguns locais 
-         falta de água e alimentos em outros 
+A API ZelaDoa - Doações foi criada para registrar e gerenciar necessidades de doações em locais afetados, como:
 
-## 👥 Pessoas impactadas:
-    - Famílias afetadas pela enchente 
-    - Voluntários 
-    - ONGs e pontos de arrecadação 
+Comunidades em situação de risco
+Áreas afetadas por enchentes
+Regiões com falta de recursos básicos
 
-## ⚠️ Por que isso é grave?
-    • Desperdício de recursos 
-    • Demora na ajuda 
-    • Pessoas continuam sofrendo mesmo com doações disponíveis 
+Essa API permite criar, visualizar, atualizar e deletar registros de doações.
 
+## 🛠️ Tecnologias utilizadas
 
-## 💡 Ideia: Plataforma de Doações Inteligente
-O ZelaDoa é um sistema que:
-    - Mostra o que cada local precisa em tempo real 
-    - Permite que doadores vejam: 
-          📍 localização 
-          📦 itens necessários 
-          📊 nível de urgência 
-    - Permite que pontos de coleta atualizem suas necessidades 
+Node.js
+Express
+SQLite
+SQLite3
+Postman
+Nodemon
 
-## 🔁 Como funciona:
-    - Um abrigo cadastra suas necessidades: 
-         Ex: “Preciso de água e alimentos” 
-    - O sistema atualiza: 
-            prioridade (Alta, Média, Baixa) 
-    - Doadores acessam: 
-          lista de locais 
-          escolhem onde doar 
-    - Evita: 
-          excesso ❌ 
-          falta ❌ 
-          desorganização ❌ 
+---
+## 📦 Instalação
+`npm install`
 
-## ⭐ Diferencial
-    - Atualização em tempo real 
-    - Sistema simples (funciona até com internet limitada) 
-    - Foco em eficiência da ajuda, não só registro 
+## ▶️ Como Executar
+```bash
+npm run dev
+```
 
- ## 🖥️ Front-end
-  Interface simples com:
+A API estará disponível em:
 
-    - Lista de pontos de doação 
+`http://localhost:3000
+`
+[Clique Aqui](http:localhost:3000)
 
-    - Filtro por: 
-         prioridade 
-         tipo de item 
-    - Botão para cadastrar necessidade 
+---
 
-## ⚙️ Back-end (Você já começou 👏)
-Você pode adaptar seu projeto atual assim:
-Nova tabela: doacoes
-CREATE TABLE IF NOT EXISTS doacoes(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  local TEXT,
-  item TEXT,
-  quantidade INTEGER,
-  prioridade TEXT,
-  status TEXT DEFAULT 'Pendente'
-);
-
-## 🔌 Rotas da API
-📥 Criar necessidade
-POST /doacoes
-📄 Listar todas
-
-GET /doacoes
-🔍 Buscar por prioridade
-GET /doacoes?prioridade=Alta
-
-✏️ Atualizar status
-PUT /doacoes/:id
-
-❌ Deletar
-DELETE /doacoes/:id
 
 ## 🗄️ Banco de Dados
-Armazena:
-    - locais afetados 
-    - itens necessários 
-    - prioridade 
-    - status da doação 
-💡 Pode usar o mesmo SQLite que você já configurou (perfeito pro projeto!)
+
+O banco de dados é criado automaticamente ao iniciar o projeto.
+
+```
+database.db
+```
+
+## 🧾 Tabela doacoes
+|Campo              |	Descrição                              |
+|-------------------|------------------------------------------|
+|id            	    |Identificador único                       |
+|local_afetado	    |	Local onde a doação é necessária       |
+|itens_necessarios	|	Itens que precisam ser doados          | 
+|quantidade         |	Quantidade necessária                  |
+|prioridade	        |	Baixa, Média ou Alta                   |
+|status_doacao	    |Status (Pendente, Em andamento, Concluída)|
+
+---
+
+## 🔗 Endpoints
 
 
-## 🧠 Resumo (pra fechar bonito no README)
-O ZelaDoa é uma solução tecnológica que organiza e distribui doações de forma inteligente em cenários de enchente, garantindo que recursos cheguem onde são mais necessários, evitando desperdícios e aumentando a eficiência da ajuda humanitária.
+### Rota Inicial
+##
+```http
+GET /
+```
 
-# Zeladoan1
+Retorna uma página HTML simples com informações da API.
+
+---
+
+```http
+GET /doacao
+```
+### Rota para listar todas as doações
+```
+## Rota para buscar um incidente específico
+(ID)
+```http
+GET /doacoes/:id
+
+Ex: /doacoes/1
+
+### Rota para criar um novo
+
+```http
+POST /doacoes
+```
+### bady (JSON)
+
+```json
+
+### Body (JSON)
+
+{
+  "local_afetado": "Rocinha",
+  "itens_necessarios": "Água, alimentos",
+  "quantidade": 100,
+  "prioridade": "Alta",
+  "status_doacao": "Lotado"
+}
+
+```
+
+### Rota para Atualizar doação
+
+```http
+PUT /doacoes/:id
+```
+### body (JSON)
+```json
+
+{
+  "itens_necessarios": "Água, alimentos e roupas",
+  "quantidade": 150,
+  "prioridade": "Alta",
+  "status_doacao": "Lotado"
+}
+```
+### Rota para Deletar doação
+```http
+DELETE /doacoes/:id
+```
+
+---
+
+## 🔐 Segurança
+
+A API utiliza  `?` nas queries SQL:
+
+```sql
+WHERE id = ?
+```
+
+Isso evita ataques de SQL Injection.
+
+## 📚 Conceitos
+CRUD (Create, Read, Update, Delete)
+Rotas com Express
+Métodos HTTP (GET, POST, PUT, DELETE)
+Banco de dados SQLite
+SQL básico
+Uso de `req.params` e `req.body`
+
+## 🎯 Observações
+O banco é criado automaticamente
+Dados iniciais podem ser inseridos se a tabela estiver vazia
+A API pode ser testada com o Postman
+
+## 👩‍💻 Projeto educacional
+
+Este projeto foi desenvolvido para fins de aprendizado em back-end com Node.js.
