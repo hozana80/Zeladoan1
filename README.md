@@ -46,14 +46,14 @@ database.db
 ```
 
 ## 🧾 Tabela doacoes
-|Campo              |	Descrição                              |
-|-------------------|------------------------------------------|
-|id            	    |Identificador único                       |
-|local_afetado	    |	Local onde a doação é necessária       |
-|itens_necessarios	|	Itens que precisam ser doados          | 
-|quantidade         |	Quantidade necessária                  |
-|prioridade	        |	Baixa, Média ou Alta                   |
-|status_doacao	    |Status (Pendente, Em andamento, Concluída)|
+|Campo                   |	Descrição                               |
+|------------------------|------------------------------------------|
+|id            	         |Identificador único                       |
+|local_afetado	         |	Local onde a doação é necessária        |
+|itens_necessarios	     |	Itens que precisam ser doados           | 
+|quantidade_necessaria   |	Quantidade necessária                   |
+|prioridade	             |	Baixa, Média ou Alta                    |
+|status_doacao	         |Status (Pendente, Em andamento, Concluída)|
 
 ---
 
@@ -151,3 +151,38 @@ A API pode ser testada com o Postman
 ## 👩‍💻 Projeto educacional
 
 Este projeto foi desenvolvido para fins de aprendizado em back-end com Node.js.
+
+
+< ! -- ## Esses emojis é um padrão em praticamente TODO README:
+
+## 🚀 Nome da API / Projeto
+## 📌 Sobre o Projeto
+## 🎯 Objetivo
+## 🛠️ Tecnologias
+## 📦 Instalação
+## ▶️ Como Executar
+## ⚙️ Configurações
+## 🗄️ Banco de Dados
+## 🔗 Endpoints
+## 🔐 Segurança
+## 📚 Conceitos
+## 💡 Dicas / Melhorias
+##  👩‍💻 Autor
+
+---
+
+## 📖 Descrição
+## 🔧 Ferramentas
+## 💻 Ambiente
+## 📊 Dados
+## 🧾 Tabela
+## 📡 Requisições
+## 📥 Entrada de dados
+## 📤 Saída de dados
+## 🚫 Bloqueios / proteção
+## 🧠 Aprendizado
+## 🎓 Educacional
+## ⚠️ Atenção
+## ❗Importante
+## 🤝 Contribuição
+## 📄 Licença
