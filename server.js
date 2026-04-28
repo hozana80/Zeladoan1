@@ -1,18 +1,22 @@
-// Importações
+// =========================
+// IMPORTAÇÕES
+// =========================
 const express = require("express");
 const cors = require("cors");
 const { criarBanco } = require("./database");
 
-const cors = require("cors");
-
 const app = express();
 
-// Middlewares
-// Ativando 
-app.use(cors());   // ativando o CORS no servidor
+// =========================
+// MIDDLEWARES
+// =========================
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Banco
+// =========================
+// BANCO DE DADOS
+// =========================
 let db;
 
 (async () => {
@@ -31,43 +35,49 @@ let db;
 app.get("/", (req, res) => {
   res.send(`
     <h1>ZelaDoa</h1>
-    <p>Sistema de Doações para Enchentes</p>
-    <p>Use /doacoes para acessar</p>
+    <h2>Sistema de Doações para Enchentes</h2>
+    <p> Endpoint que leva as doações para acessar: /doacoes</p>
+    </body>
+
   `);
 });
 
 // =========================
-// ROTAS DE DOAÇÕES
-// =========================
-
 // LISTAR TODAS
+// =========================
 app.get("/doacoes", async (req, res) => {
-
-  const listadoacoes = await db.all("SELECT * FROM doacoes");
-  res.json(listadoacoes);
+  const lista = await db.all("SELECT * FROM doacoes");
+  res.json(lista);
 });
 
+// =========================
 // BUSCAR POR ID
+// =========================
 app.get("/doacoes/:id", async (req, res) => {
   const { id } = req.params;
 
-  const db = await db.get(
+  const doacao = await db.get(
     "SELECT * FROM doacoes WHERE id = ?",
     [id]
   );
 
-  if (!db) {
+  if (!doacao) {
     return res.status(404).json({ erro: "Doação não encontrada" });
   }
 
-  res.json(db);
+  res.json(doacao);
 });
 
+// =========================
 // CRIAR DOAÇÃO
+// =========================
 app.post("/doacoes", async (req, res) => {
-  let { local, item, quantidade, prioridade } = req.body;
+  const { local, item, quantidade, prioridade } = req.body;
 
-  // Itens válidos atualizados
+  if (!local || !item || !quantidade || !prioridade) {
+    return res.status(400).json({ erro: "Todos os campos são obrigatórios" });
+  }
+
   const itensValidos = [
     "alimento",
     "água",
@@ -78,41 +88,64 @@ app.post("/doacoes", async (req, res) => {
   ];
 
   if (!itensValidos.includes(item.toLowerCase())) {
-    return res.status(400).json({
-      erro: "Item inválido. Use: alimento, água, roupa, sapato, ração de animais ou produto de higiene pessoal",
-    });
+    return res.status(400).json({ erro: "Item inválido" });
   }
 
-  await db.run(
-    `INSERT INTO doacoes (local, item, quantidade, prioridade)
-     VALUES (?, ?, ?, ?)`,
-    [local, item, quantidade, prioridade]
+  const agora = new Date();
+  const data_registro = agora.toLocaleDateString("pt-BR");
+  const hora_registro = agora.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  const result = await db.run(
+    `INSERT INTO doacoes (local, item, quantidade, prioridade, data_registro, hora_registro) 
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [local, item, quantidade, prioridade, data_registro, hora_registro]
   );
 
-  res.json({
-    mensagem: `Doação de ${item} cadastrada com sucesso!`,
+  res.status(201).json({
+    id: result.lastID,
+    local,
+    item,
+    quantidade,
+    prioridade,
+    status_doacao: "Pendente",
+    data_registro,
+    hora_registro
   });
 });
 
-// ATUALIZAR STATUS
+// =========================
+// ATUALIZAR DOAÇÃO (PUT)
+// =========================
 app.put("/doacoes/:id", async (req, res) => {
+try {
   const { id } = req.params;
 
   const { item, prioridade, status_doacao } = req.body;
 
-  const db = await CriarBanco();
-
-  await db.run(
-  "UPDATE doacoes SET item = ?, prioridade =?, status_doacao = ? WHERE id = ?",
-   [item, prioridade, status_doacao, id]
+  const result = await db.run(
+    `UPDATE doacoes 
+       SET item = ?, prioridade = ?, status_doacao = ?
+       WHERE id = ?`,
+    [item, prioridade, status_doacao, id]
   );
-  
-  
-  res.send(`Doação ${id} foi atualizada com sucesso!`);
 
+  if (result.changes === 0) {
+    return res.status(404).json({ erro: "Doação não encontrada" });
+  }
+
+  res.json({ mensagem: "Doação atualizada com sucesso!" });
+  } catch (erro) {
+    console.error(erro);
+    res.status(500).json({ erro: "Erro ao atualizar doação" });
+  }
 });
 
-// DELETAR DOAÇÃO (mantido correto!)
+// =========================
+// DELETAR
+// =========================
 app.delete("/doacoes/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -129,9 +162,19 @@ app.delete("/doacoes/:id", async (req, res) => {
 });
 
 // =========================
+// TRATAMENTO DE ERRO DE JSON MALFORMADO
+// =========================
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res.status(400).json({ erro: "Corpo JSON inválido" });
+  }
+
+  next(err);
+});
+
+// =========================
 // SERVIDOR
 // =========================
-// Criando um variavel inteligente para  a porta
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {

@@ -1,32 +1,51 @@
-// Importações
+// =========================
+// IMPORTAÇÕES
+// =========================
 const sqlite3 = require("sqlite3");
 const { open } = require("sqlite");
 
-// Função para criar e configurar o banco
+// =========================
+// FUNÇÃO PRINCIPAL
+// =========================
 const criarBanco = async () => {
   const db = await open({
-    filename: "./zeladoarn1.db",
+    filename: "./zeladoan1.db", // corrigido nome
     driver: sqlite3.Database,
   });
 
   // =========================
-  // CRIAÇÃO DA TABELA DOAÇÕES
+  // CRIAR TABELA
   // =========================
   await db.exec(`
     CREATE TABLE IF NOT EXISTS doacoes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      local TEXT,
-      item TEXT,
-      quantidade INTEGER,
-      prioridade TEXT,
-      status_doacao TEXT DEFAULT "Lotado"
-    )
+      local TEXT NOT NULL,
+      item TEXT NOT NULL,
+      quantidade INTEGER NOT NULL,
+      prioridade TEXT NOT NULL,
+      status_doacao TEXT DEFAULT 'Pendente',
+      data_registro TEXT,
+      hora_registro TEXT
+    );
   `);
 
-  console.log("Banco configurado: tabela de doações pronta!");
+  const tabelaInfo = await db.all(`PRAGMA table_info(doacoes);`);
+  const colunas = tabelaInfo.map((coluna) => coluna.name);
+
+  if (!colunas.includes("data_registro")) {
+    await db.exec(`ALTER TABLE doacoes ADD COLUMN data_registro TEXT;`);
+    console.log("Coluna data_registro adicionada ao banco existente.");
+  }
+
+  if (!colunas.includes("hora_registro")) {
+    await db.exec(`ALTER TABLE doacoes ADD COLUMN hora_registro TEXT;`);
+    console.log("Coluna hora_registro adicionada ao banco existente.");
+  }
+
+  console.log("Banco configurado!");
 
   // =========================
-  // INSERT (DADOS INICIAIS)
+  // INSERIR DADOS INICIAIS (APENAS SE VAZIO)
   // =========================
   const checagem = await db.get(
     "SELECT COUNT(*) AS total FROM doacoes"
@@ -43,55 +62,21 @@ const criarBanco = async () => {
       ('Posto de Apoio', 'produto de higiene pessoal', 60, 'Média')
     `);
 
-    console.log("Dados iniciais de doações inseridos!");
+    console.log("Dados iniciais inseridos!");
   } else {
-    console.log(`Banco já possui ${checagem.total} doações cadastradas`);
+    console.log(`Banco já possui ${checagem.total} registros`);
   }
 
   // =========================
-  // SELECT (VISUALIZAÇÃO)
+  // LOG SIMPLES (OPCIONAL)
   // =========================
-  const todasDoacoes = await db.all("SELECT * FROM doacoes");
-  console.table(todasDoacoes);
-
-  // SELECT específico
-  const doacoesAlta = await db.all(
-    `SELECT * FROM doacoes WHERE prioridade = "Alta"`
-  );
-  console.log("Doações com prioridade alta:");
-  console.table(doacoesAlta);
-
-  // =========================
-  // UPDATE (EXEMPLO)
-  // =========================
-  await db.run(`
-    UPDATE doacoes
-    SET status_doacao = "Lotado"
-    WHERE prioridade = "Alta"
-  `);
-
-  console.log("Doações de prioridade alta atualizadas para 'Lotado'");
-
-  // =========================
-  // DELETE (EXEMPLO SEGURO)
-  // =========================
-  // (Executa apenas se existir ID alto, evitando apagar dados iniciais)
-  await db.run(`
-    DELETE FROM doacoes
-    WHERE id > 1000
-  `);
-
-  console.log("Limpeza automática concluída (se necessário)");
-
-  // =========================
-  // RELATÓRIO FINAL
-  // =========================
-  const resultadoFinal = await db.all("SELECT * FROM doacoes");
-  console.log("Relatório final:");
-  console.table(resultadoFinal);
+  const todas = await db.all("SELECT * FROM doacoes");
+  console.table(todas);
 
   return db;
 };
 
-// Exportação
+// =========================
+// EXPORTAÇÃO
+// =========================
 module.exports = { criarBanco };

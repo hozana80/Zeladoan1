@@ -148,6 +148,29 @@ O banco é criado automaticamente
 Dados iniciais podem ser inseridos se a tabela estiver vazia
 A API pode ser testada com o Postman
 
+### Teste com Postman
+- Método: `POST`
+- URL: `http://localhost:3000/doacoes`
+- Headers:
+  - `Content-Type: application/json`
+- Body: selecione `raw` e `JSON` no Postman
+- Body (raw JSON):
+```json
+{
+  "local": "Abrigo Escola A",
+  "item": "água",
+  "quantidade": 50,
+  "prioridade": "Alta"
+}
+```
+
+Importante:
+- use aspas duplas `"` em todas as chaves e valores de texto
+- não deixe vírgula extra depois do último item
+- o corpo deve ser JSON válido para evitar o erro `Corpo JSON inválido`
+
+A resposta retorna o novo registro com `status_doacao`, `data_registro` e `hora_registro`.
+
 ## 👩‍💻 Projeto educacional
 
 Este projeto foi desenvolvido para fins de aprendizado em back-end com Node.js.
