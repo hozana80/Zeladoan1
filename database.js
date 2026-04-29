@@ -23,24 +23,12 @@ const criarBanco = async () => {
       item TEXT NOT NULL,
       quantidade INTEGER NOT NULL,
       prioridade TEXT NOT NULL,
-      status_doacao TEXT DEFAULT 'Pendente',
-      data_registro TEXT,
-      hora_registro TEXT
+      status_doacao TEXT DEFAULT 'Pendente'
     );
   `);
 
   const tabelaInfo = await db.all(`PRAGMA table_info(doacoes);`);
   const colunas = tabelaInfo.map((coluna) => coluna.name);
-
-  if (!colunas.includes("data_registro")) {
-    await db.exec(`ALTER TABLE doacoes ADD COLUMN data_registro TEXT;`);
-    console.log("Coluna data_registro adicionada ao banco existente.");
-  }
-
-  if (!colunas.includes("hora_registro")) {
-    await db.exec(`ALTER TABLE doacoes ADD COLUMN hora_registro TEXT;`);
-    console.log("Coluna hora_registro adicionada ao banco existente.");
-  }
 
   console.log("Banco configurado!");
 

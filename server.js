@@ -101,7 +101,7 @@ app.post("/doacoes", async (req, res) => {
   const result = await db.run(
     `INSERT INTO doacoes (local, item, quantidade, prioridade, data_registro, hora_registro) 
      VALUES (?, ?, ?, ?, ?, ?)`,
-    [local, item, quantidade, prioridade, data_registro, hora_registro]
+    [local, item, quantidade, prioridade]
   );
 
   res.status(201).json({
@@ -110,10 +110,7 @@ app.post("/doacoes", async (req, res) => {
     item,
     quantidade,
     prioridade,
-    status_doacao: "Pendente",
-    data_registro,
-    hora_registro
-  });
+    status_doacao: "Pendente" });
 });
 
 // =========================

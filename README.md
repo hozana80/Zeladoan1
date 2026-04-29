@@ -53,7 +53,7 @@ database.db
 |itens_necessarios	     |	Itens que precisam ser doados           | 
 |quantidade_necessaria   |	Quantidade necessária                   |
 |prioridade	             |	Baixa, Média ou Alta                    |
-|status_doacao	         |Status (Pendente, Em andamento, Concluída)|
+|status_doacao	         |Status (Faltando, Em andamento, Lotado)|
 
 ---
 
@@ -169,7 +169,7 @@ Importante:
 - não deixe vírgula extra depois do último item
 - o corpo deve ser JSON válido para evitar o erro `Corpo JSON inválido`
 
-A resposta retorna o novo registro com `status_doacao`, `data_registro` e `hora_registro`.
+A resposta retorna o novo registro com `status_doacao`, `item` e `prioridade`.
 
 ## 👩‍💻 Projeto educacional
 
